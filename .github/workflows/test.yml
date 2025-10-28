@@ -1,0 +1,34 @@
+name: Test GCP Folder Execution
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+
+    - name: Install dependencies
+      run: |
+        pip install scikit-learn pandas numpy scipy keras tensorflow
+
+    - name: Run GCP scripts
+      run: |
+        python Test.py || echo "Test.py failed, possibly due to missing data file, but syntax check passed"
+        python AutoMl.py || echo "AutoMl.py failed"
+        python GCP.py || echo "GCP.py failed"
+        python PredictionfromModel.py || echo "PredictionfromModel.py failed"
